@@ -1,9 +1,11 @@
 import unittest
 import datetime
+import sys
+
+sys.path.append('../')
 from read_grindstone_csv import Time_slice
 
 class Time_slice_test(unittest.TestCase):
-
 
     def test_expected_working(self):
         WORK_ITEM = '1181-ROS QSPI FT'
