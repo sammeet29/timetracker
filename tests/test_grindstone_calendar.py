@@ -24,9 +24,58 @@ class Calender_test(unittest.TestCase):
         self.cal.add_timeslice(tc)
         entries = self.cal.get_entries()
         self.assertEqual(1, len(entries))
+        self.assertTrue(tc.get_date() in entries)
+        self.assertEqual(entries[tc.get_date()][tc.work_item], 0.25)
 
-# class Day_entry_test(unittest.TestCase):
-#     def test_init(self):
-#         day_date = datetime.date(2021, 10, 21)
-#         day_entry = Day_entry(day_date)
-#         self.assertEquals(day_entry, day_date)
+    def test_same_entry_twice(self):
+
+        tc = Time_slice(WORK_ITEM, START_TIME, DURATION)
+        self.cal.add_timeslice(tc)
+        self.cal.add_timeslice(tc)
+
+        entries = self.cal.get_entries()
+        self.assertEqual(1, len(entries))
+        self.assertTrue(tc.get_date() in entries)
+        self.assertEqual(entries[tc.get_date()][tc.work_item], 0.50)
+
+    def test_multiple_entries_same_day(self):
+        tc = Time_slice(WORK_ITEM, START_TIME, DURATION)
+        self.cal.add_timeslice(tc)
+
+        work_item_2 = 'Work Item 2'
+        tc2 = Time_slice(work_item_2, START_TIME, DURATION)
+        self.cal.add_timeslice(tc2)
+
+        entries = self.cal.get_entries()
+        self.assertEqual(1, len(entries))
+
+        self.assertTrue(tc.get_date() in entries)
+
+        day_entry = entries[tc.get_date()]
+        self.assertTrue(WORK_ITEM in day_entry)
+        self.assertTrue(work_item_2 in day_entry)
+
+        self.assertEqual(day_entry[tc.work_item], 0.25)
+        self.assertEqual(day_entry[work_item_2], 0.25)
+
+    def test_same_work_item_multiple_days(self):
+        tc = Time_slice(WORK_ITEM, START_TIME, DURATION)
+        self.cal.add_timeslice(tc)
+
+        start_time2 = '8/17/2021 10:39:16 AM'
+        tc2 = Time_slice(WORK_ITEM, start_time2, DURATION)
+        self.cal.add_timeslice(tc2)
+
+        entries = self.cal.get_entries()
+        self.assertEqual(2, len(entries))
+
+        self.assertTrue(tc.get_date() in entries)
+        self.assertTrue(tc2.get_date() in entries)
+
+        day_entry = entries[tc.get_date()]
+        self.assertTrue(WORK_ITEM in day_entry)
+        self.assertEqual(day_entry[WORK_ITEM], 0.25)
+
+        day_entry2 = entries[tc2.get_date()]
+        self.assertTrue(WORK_ITEM in day_entry2)
+        self.assertEqual(day_entry2[WORK_ITEM], 0.25)

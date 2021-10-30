@@ -5,14 +5,16 @@ class Calendar:
     def __init__(self):
         self.days = {}
 
-    def add_timeslice(self, timeslice):
-        timeslice_date = timeslice.get_date()
-        if timeslice_date in self.days:
-            work_item = timeslice.work_item
-            if work_item in self.days[timeslice_date]:
-                self.days[timeslice_date][work_item] += timeslice.duration
+    def add_timeslice(self, ts):
+        ts_date = ts.get_date()
+        if ts_date in self.days:
+            wi = ts.work_item
+            if wi in self.days[ts_date]:
+                self.days[ts_date][wi] += ts.duration_dec
+            else:
+                self.days[ts_date][wi] = ts.duration_dec
         else:
-            self.days[timeslice_date] = {timeslice.work_item  : timeslice.duration}
+            self.days[ts_date] = {ts.work_item  : ts.duration_dec}
 
     def get_entries(self):
         return self.days
