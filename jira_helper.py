@@ -12,9 +12,14 @@ class Jira_helper:
         # self.jira = JIRA(SEL_JIRA_URL)
         # print("Jira helper")
 
-    # make this work so as to know what we need to do to get the data
+    """
+    The following link explains how to use it
+    https://docs.atlassian.com/software/jira/docs/api/REST/8.13.13/#issue-getIssue
+
+    """
     def find_issue(self, issue_id):
-        issue = requests.get(SEL_JIRA_URL+ "issue/" + issue_id, auth=(self.user, self.pswd))
+        payload = {'fields' : ['id', 'issueType', 'summary', 'status']}
+        issue = requests.get(SEL_JIRA_URL+ "issue/" + issue_id, auth=(self.user, self.pswd), params=payload)
         print(issue.url)
         return issue
 
@@ -24,10 +29,11 @@ class Jira_helper:
 
 def main():
     j = Jira_helper()
-    issue = j.find_issue('RP-1')
-    print("Issue Response :",issue)
-    # issue_json = issue.json()
-    # print(issue_json)
+    issue = j.find_issue('RP-8054')
+    print("Issue Response :", issue)
+    if(issue is not None):
+        issue_json = issue.json()
+        print(issue_json)
 
 if __name__ == '__main__':
     main()
