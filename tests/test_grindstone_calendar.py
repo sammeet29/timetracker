@@ -25,7 +25,7 @@ class Calender_test(unittest.TestCase):
         entries = self.cal.get_entries()
         self.assertEqual(1, len(entries))
         self.assertTrue(tc.get_date() in entries)
-        self.assertEqual(entries[tc.get_date()][tc.work_item], 0.25)
+        self.assertEqual(entries[tc.get_date()][tc.work_item], 15)
 
     def test_same_entry_twice(self):
 
@@ -36,7 +36,7 @@ class Calender_test(unittest.TestCase):
         entries = self.cal.get_entries()
         self.assertEqual(1, len(entries))
         self.assertTrue(tc.get_date() in entries)
-        self.assertEqual(entries[tc.get_date()][tc.work_item], 0.50)
+        self.assertEqual(entries[tc.get_date()][tc.work_item], 30)
 
     def test_multiple_entries_same_day(self):
         tc = Time_slice(WORK_ITEM, START_TIME, DURATION)
@@ -55,8 +55,8 @@ class Calender_test(unittest.TestCase):
         self.assertTrue(WORK_ITEM in day_entry)
         self.assertTrue(work_item_2 in day_entry)
 
-        self.assertEqual(day_entry[tc.work_item], 0.25)
-        self.assertEqual(day_entry[work_item_2], 0.25)
+        self.assertEqual(day_entry[tc.work_item], 15)
+        self.assertEqual(day_entry[work_item_2], 15)
 
     def test_same_work_item_multiple_days(self):
         tc = Time_slice(WORK_ITEM, START_TIME, DURATION)
@@ -74,8 +74,8 @@ class Calender_test(unittest.TestCase):
 
         day_entry = entries[tc.get_date()]
         self.assertTrue(WORK_ITEM in day_entry)
-        self.assertEqual(day_entry[WORK_ITEM], 0.25)
+        self.assertEqual(day_entry[WORK_ITEM], 15)
 
         day_entry2 = entries[tc2.get_date()]
         self.assertTrue(WORK_ITEM in day_entry2)
-        self.assertEqual(day_entry2[WORK_ITEM], 0.25)
+        self.assertEqual(day_entry2[WORK_ITEM], 15)

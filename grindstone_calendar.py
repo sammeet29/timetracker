@@ -10,11 +10,11 @@ class Calendar:
         if ts_date in self.days:
             wi = ts.work_item
             if wi in self.days[ts_date]:
-                self.days[ts_date][wi] += ts.duration_dec
+                self.days[ts_date][wi] += ts.get_duration()
             else:
-                self.days[ts_date][wi] = ts.duration_dec
+                self.days[ts_date][wi] = ts.get_duration()
         else:
-            self.days[ts_date] = {ts.work_item  : ts.duration_dec}
+            self.days[ts_date] = {ts.work_item  : ts.get_duration()}
 
     def get_entries(self):
         return self.days
