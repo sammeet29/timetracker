@@ -35,6 +35,7 @@ def main():
     parser = argparse.ArgumentParser(prog = "read_grindstone_csv",
         description = "Reads the Grindstone csv")
     parser.add_argument('csv_file', help = 'The grindstone csv file to read from')
+    parser.add_argument('-s', action='store_false', dest='silent', default = True, help= 'Do not print the calender')
 
     args = vars(parser.parse_args())
     csv_file_name = args['csv_file']
@@ -43,7 +44,9 @@ def main():
         print("Invalid file")
         exit()
 
-    grindstone_file.get_calendar()
+    cal = grindstone_file.get_calendar()
+    if(args['silent']):
+        cal.print_calender()
 
 if __name__ == "__main__":
     main()

@@ -4,6 +4,7 @@ class Time_slice:
     def get_date(self):
         return self.day_date
 
+    #returns duration of the timeslice in seconds
     def get_duration(self):
         return self.duration_secs
 
