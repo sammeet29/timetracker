@@ -16,7 +16,7 @@ class Time_slice:
     # converts the duration into secs
     def __decode_duration(self, duration):
         t_list = duration.split(":")
-        time_in_secs = int(t_list[0]) * 60 + int(t_list[1])
+        time_in_secs = int(t_list[0]) * 360 + int(t_list[1]) * 60 + int(t_list[2])
         return time_in_secs
 
     def __init__(self, work_item, start, duration):
