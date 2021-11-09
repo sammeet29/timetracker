@@ -13,9 +13,7 @@ https://developer.atlassian.com/cloud/jira/platform/rest/v2/intro/
 
 class Jira_helper:
     def __init__(self):
-        self.__authenticate__()
-        # self.jira = JIRA(SEL_JIRA_URL)
-        # print("Jira helper")
+        self.__authenticate()
 
     """
     The following link explains how to use it
@@ -44,7 +42,7 @@ class Jira_helper:
         }
         return requests.post(url, auth=(self.user, self.pswd), data=payload, headers=headers)
 
-    def __authenticate__(self):
+    def __authenticate(self):
         self.user = getpass.getuser()
         self.pswd = getpass.getpass(prompt= ("Password for " + self.user + ": "))
 
