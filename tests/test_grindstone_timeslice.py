@@ -17,7 +17,7 @@ class Timeslice_test(unittest.TestCase):
         self.assertTrue(tc.work_item == WORK_ITEM, 'Work Item does not match')
         self.assertTrue(tc.start == START_TIME, 'Start time is not correct')
         self.assertTrue(tc.duration == DURATION)
-        self.assertTrue(tc.duration_dec == 0.25)
+        self.assertEqual(tc.get_duration(), 932)
 
         expected_date = datetime.date(2021, 8, 16)
         self.assertEqual(tc.day_date, expected_date, 'Date does not match')

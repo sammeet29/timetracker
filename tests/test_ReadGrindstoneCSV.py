@@ -14,6 +14,8 @@ class read_grindstone_csv(unittest.TestCase):
         read_file = Read_grindstone_csv("invalid_timeslices.csv")
         self.assertFalse(read_file.is_valid)
 
-    def test_valid_filepath(self):
+    def test_expected_working(self):
         read_file = Read_grindstone_csv("test.csv")
         self.assertTrue(read_file.is_valid)
+        cal = read_file.get_calendar()
+        self.assertFalse(cal is None)
