@@ -1,6 +1,9 @@
 from datetime import datetime
 
 class Time_slice:
+    def get_work_item(self):
+        return self.work_item
+
     def get_date(self):
         return self.day_date
 

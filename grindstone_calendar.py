@@ -3,21 +3,22 @@ from grindstone_timeslice import Time_slice
 
 class Calendar:
     def __init__(self):
-        self.days = {}
+        self.all_work_items = {}
 
     def add_timeslice(self, ts):
-        ts_date = ts.get_date()
-        if ts_date in self.days:
-            wi = ts.work_item
-            if wi in self.days[ts_date]:
-                self.days[ts_date][wi] += ts.get_duration()
+        ts_wi = ts.get_work_item()
+        if ts_wi in self.all_work_items:
+            ts_date = ts.get_date()
+            ts_duration = ts.get_duration()
+            if ts_date in self.all_work_items[ts_wi]:
+                self.all_work_items[ts_wi][ts_date] += ts_duration
             else:
-                self.days[ts_date][wi] = ts.get_duration()
+                self.all_work_items[ts_wi][ts_date] = ts_duration
         else:
-            self.days[ts_date] = {ts.work_item  : ts.get_duration()}
+            self.all_work_items[ts_wi] = {ts.get_date()  : ts.get_duration()}
 
     def get_entries(self):
-        return self.days
+        return self.all_work_items
 
     # Returns all the days of the entries in the calender
     def get_calender_days(self):
@@ -33,4 +34,4 @@ class Calendar:
                     " Time: " + str(all_timeslices_for_day[each_item]) + " secs")
 
     def clear_entries(self):
-        self.days = {}
+        self.all_work_items = {}
