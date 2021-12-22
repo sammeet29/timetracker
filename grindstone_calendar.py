@@ -20,18 +20,13 @@ class Calendar:
     def get_entries(self):
         return self.all_work_items
 
-    # Returns all the days of the entries in the calender
-    def get_calender_days(self):
-        list_of_days = self.days.keys()
-        return list_of_days
-
     def print_calender(self):
-        for each_day in self.days.keys():
-            all_timeslices_for_day = self.days[each_day]
-            for each_item in all_timeslices_for_day.keys():
-                print("Date " + str(each_day) + \
-                    " Work Item: " + each_item + \
-                    " Time: " + str(all_timeslices_for_day[each_item]) + " secs")
+        for each_item in self.all_work_items.keys():
+            days = self.all_work_items[each_item]
+            print("Work Item :" + each_item)
+            for each_day in days.keys():
+                print("  Date " + str(each_day) + \
+                    " Time: " + str(days[each_day]) + " secs")
 
     def clear_entries(self):
         self.all_work_items = {}
