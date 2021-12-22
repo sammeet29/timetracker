@@ -30,3 +30,18 @@ class Calendar:
 
     def clear_entries(self):
         self.all_work_items = {}
+
+def find_issue(wi_name):
+    import re
+    number_pattern = re.compile('\d+')
+    number_match = number_pattern.search(wi_name)
+
+    project_pattern = re.compile('(-[a-z|A-Z]+)|([a-z|A-Z]+-)')
+    proj_match = project_pattern.search(wi_name)
+
+    if((number_match is None) | (proj_match is None)):
+        return ""
+    else:
+        issue_number = number_match.group()
+        proj = proj_match.group().strip(" -") # remove space and '-'2
+        return proj + '-' + issue_number

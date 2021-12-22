@@ -75,3 +75,22 @@ class Calendar_test(unittest.TestCase):
 
         self.assertTrue(tc2.get_date() in work_item_entries)
         self.assertEqual(work_item_entries[tc2.get_date()], 932)
+
+from grindstone_calendar import find_issue
+class Find_issue(unittest.TestCase):
+    def test_issue_then_project(self):
+        actual_issue = find_issue(WORK_ITEM)
+        expected_result = "ROS-1181"
+        self.assertMultiLineEqual(expected_result, actual_issue)
+
+    def test_proj_then_issue(self):
+        work_item = "ROS-1181 QSPI FT"
+        actual_issue = find_issue(work_item)
+        expected_result = "ROS-1181"
+        self.assertMultiLineEqual(expected_result, actual_issue)
+
+    def test_wi_without_issue_name(self):
+        work_item = "Admin"
+        actual_issue = find_issue(work_item)
+        expected_result = ""
+        self.assertMultiLineEqual(expected_result, actual_issue)
