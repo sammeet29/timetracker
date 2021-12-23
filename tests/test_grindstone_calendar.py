@@ -80,11 +80,12 @@ class Calendar_test(unittest.TestCase):
     def test_iterrating_single_entry(self):
         self.cal.add_timeslice(TC)
 
-        work_log = self.cal.get_next_issue()
+        work_item = self.cal.get_next_issue()
+        work_log = self.cal.get_work_logs(work_item)
         self.assertEqual(1, len(work_log))
 
-        work_log = self.cal.get_next_issue()
-        self.assertTrue(work_log is None)
+        work_item = self.cal.get_next_issue()
+        self.assertTrue(work_item is None)
 
     def test_iterrating_2_entries(self):
         self.cal.add_timeslice(TC)
@@ -93,13 +94,16 @@ class Calendar_test(unittest.TestCase):
         tc2 = Time_slice(work_item_2, START_TIME, DURATION)
         self.cal.add_timeslice(tc2)
 
-        work_log = self.cal.get_next_issue()
-        self.assertEqual(1, len(work_log))
-        work_log = self.cal.get_next_issue()
+        work_item = self.cal.get_next_issue()
+        work_log = self.cal.get_work_logs(work_item)
         self.assertEqual(1, len(work_log))
 
-        work_log = self.cal.get_next_issue()
-        self.assertTrue(work_log is None)
+        work_item = self.cal.get_next_issue()
+        work_log = self.cal.get_work_logs(work_item)
+        self.assertEqual(1, len(work_log))
+
+        work_item = self.cal.get_next_issue()
+        self.assertTrue(work_item is None)
 
     def test_iterrating_1_work_item_multiple_days(self):
         self.cal.add_timeslice(TC)
@@ -110,7 +114,8 @@ class Calendar_test(unittest.TestCase):
         tc2 = Time_slice(WORK_ITEM, start , DURATION)
         self.cal.add_timeslice(tc2)
 
-        work_log = self.cal.get_next_issue()
+        work_item = self.cal.get_next_issue()
+        work_log = self.cal.get_work_logs(work_item)
         self.assertEqual(2, len(work_log))
 
 from grindstone_calendar import find_issue

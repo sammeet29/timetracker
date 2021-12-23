@@ -6,6 +6,9 @@ class Calendar:
         self.all_work_items = {}
         self.work_item_keys = []
 
+    '''
+    Add timeslice to the calendar
+    '''
     def add_timeslice(self, ts):
         ts_wi = ts.get_work_item()
         if ts_wi in self.all_work_items:
@@ -30,20 +33,20 @@ class Calendar:
         return self.all_work_items[work_item]
 
     """
-    Returns the Work logs for the next JIRA issue.
+    Returns the next work item.
     This needs to be reset before using it again.
     """
     def get_next_issue(self):
         if (len(self.work_item_keys) == 0):
             self.work_item_keys = list(self.all_work_items.keys())
-            work_log = self.all_work_items[self.work_item_keys[0]]
+            work_item = self.work_item_keys[0]
             self.entry_index = 0
         else:
             self.entry_index += 1
-            work_log = None
+            work_item = None
             if(self.entry_index < len(self.work_item_keys)):
-                work_log = self.all_work_items[self.work_item_keys[self.entry_index]]
-        return work_log
+                work_item = self.work_item_keys[self.entry_index]
+        return work_item
 
     def reset_iterator(self):
         self.work_item_keys = []
@@ -56,6 +59,9 @@ class Calendar:
                 print("  Date " + str(each_day) + \
                     " Time: " + str(days[each_day]) + " secs")
 
+    '''
+    Clear Calendar entries
+    '''
     def clear_entries(self):
         self.all_work_items = {}
         self.reset_iterator()
@@ -72,7 +78,7 @@ def find_issue(wi_name):
         return ""
     else:
         issue_number = number_match.group()
-        proj = proj_match.group().strip(" -") # remove space and '-'2
+        proj = proj_match.group().strip(" -") # remove space and '-'
         return proj + '-' + issue_number
 
 def round_up(time_in_secs):
