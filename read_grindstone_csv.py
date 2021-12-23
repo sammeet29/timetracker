@@ -29,6 +29,30 @@ class Read_grindstone_csv:
             return False
         return True
 
+def verify_issue(work_item, issue):
+    rtn = False
+    print('Is JIRA issue:', issue,'correct for', work_item, '?')
+    response = input()
+    if((response == 'y') or (response == 'Y')):
+        rtn = True
+    return rtn
+
+def get_issue_from_user(work_item):
+    issue = None
+    print('Enter Jira issue for the Work Item:', work_item)
+    issue = input()
+    return issue
+
+def get_issue(work_item):
+    from grindstone_calendar import find_issue
+    while(True):
+        issue = find_issue(work_item)
+        if(issue is None):
+            issue = get_issue_from_user(work_item)
+        if(verify_issue(work_item, issue)):
+            break
+    return issue
+
 def main():
     import argparse
 
@@ -47,6 +71,20 @@ def main():
     cal = grindstone_file.get_calendar()
     if(args['silent']):
         cal.print_calender()
+
+    work_item = cal.get_next_issue()
+    while work_item is not None:
+        issue = get_issue(work_item)
+        work_log = cal.get_work_logs(work_item)
+        print(issue)
+        for key in work_log.keys():
+            from grindstone_calendar import round_up
+            print("  ", key, (round_up(work_log[key])/(60 * 60)), 'hrs')
+            # log time here
+            # log result in a text file!
+        work_item = cal.get_next_issue()
+
+    #print log text file
 
 if __name__ == "__main__":
     main()

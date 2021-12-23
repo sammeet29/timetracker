@@ -74,12 +74,12 @@ def find_issue(wi_name):
     project_pattern = re.compile('(-[a-z|A-Z]+)|([a-z|A-Z]+-)')
     proj_match = project_pattern.search(wi_name)
 
-    if((number_match is None) | (proj_match is None)):
-        return ""
-    else:
+    issue = None
+    if((number_match is not None) and (proj_match is not None)):
         issue_number = number_match.group()
         proj = proj_match.group().strip(" -") # remove space and '-'
-        return proj + '-' + issue_number
+        issue = proj + '-' + issue_number
+    return issue
 
 def round_up(time_in_secs):
     _15_MINS_IN_SECS = 15 * 60
