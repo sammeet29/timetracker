@@ -4,6 +4,7 @@ from grindstone_timeslice import Time_slice
 class Calendar:
     def __init__(self):
         self.all_work_items = {}
+        self.work_item_keys = []
 
     def add_timeslice(self, ts):
         ts_wi = ts.get_work_item()
@@ -20,6 +21,33 @@ class Calendar:
     def get_entries(self):
         return self.all_work_items
 
+    """
+    Given the work item, gives all the work logs related to it.
+
+    Returns : None if it does not exist
+    """
+    def get_work_logs(self, work_item):
+        return self.all_work_items[work_item]
+
+    """
+    Returns the Work logs for the next JIRA issue.
+    This needs to be reset before using it again.
+    """
+    def get_next_issue(self):
+        if (len(self.work_item_keys) == 0):
+            self.work_item_keys = list(self.all_work_items.keys())
+            work_log = self.all_work_items[self.work_item_keys[0]]
+            self.entry_index = 0
+        else:
+            self.entry_index += 1
+            work_log = None
+            if(self.entry_index < len(self.work_item_keys)):
+                work_log = self.all_work_items[self.work_item_keys[self.entry_index]]
+        return work_log
+
+    def reset_iterator(self):
+        self.work_item_keys = []
+
     def print_calender(self):
         for each_item in self.all_work_items.keys():
             days = self.all_work_items[each_item]
@@ -30,6 +58,7 @@ class Calendar:
 
     def clear_entries(self):
         self.all_work_items = {}
+        self.reset_iterator()
 
 def find_issue(wi_name):
     import re

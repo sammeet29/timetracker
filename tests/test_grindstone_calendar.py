@@ -50,6 +50,7 @@ class Calendar_test(unittest.TestCase):
         self.assertTrue(tc2.work_item in entries)
 
         work_item_1_entries = entries[TC.work_item]
+        self.assertEqual(work_item_1_entries, self.cal.get_work_logs(WORK_ITEM))
         self.assertEqual(work_item_1_entries[TC.get_date()], 932)
 
         work_item_2_entries = entries[tc2.work_item]
@@ -75,6 +76,42 @@ class Calendar_test(unittest.TestCase):
 
         self.assertTrue(tc2.get_date() in work_item_entries)
         self.assertEqual(work_item_entries[tc2.get_date()], 932)
+
+    def test_iterrating_single_entry(self):
+        self.cal.add_timeslice(TC)
+
+        work_log = self.cal.get_next_issue()
+        self.assertEqual(1, len(work_log))
+
+        work_log = self.cal.get_next_issue()
+        self.assertTrue(work_log is None)
+
+    def test_iterrating_2_entries(self):
+        self.cal.add_timeslice(TC)
+
+        work_item_2 = '1205-ROS Review FT code'
+        tc2 = Time_slice(work_item_2, START_TIME, DURATION)
+        self.cal.add_timeslice(tc2)
+
+        work_log = self.cal.get_next_issue()
+        self.assertEqual(1, len(work_log))
+        work_log = self.cal.get_next_issue()
+        self.assertEqual(1, len(work_log))
+
+        work_log = self.cal.get_next_issue()
+        self.assertTrue(work_log is None)
+
+    def test_iterrating_1_work_item_multiple_days(self):
+        self.cal.add_timeslice(TC)
+
+        # change start to make it appear as a different log, entries in
+        # the same date are merged together
+        start = '8/17/2021 10:39:16 AM'
+        tc2 = Time_slice(WORK_ITEM, start , DURATION)
+        self.cal.add_timeslice(tc2)
+
+        work_log = self.cal.get_next_issue()
+        self.assertEqual(2, len(work_log))
 
 from grindstone_calendar import find_issue
 class Find_issue(unittest.TestCase):
