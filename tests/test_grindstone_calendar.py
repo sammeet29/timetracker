@@ -94,3 +94,14 @@ class Find_issue(unittest.TestCase):
         actual_issue = find_issue(work_item)
         expected_result = ""
         self.assertMultiLineEqual(expected_result, actual_issue)
+
+from grindstone_calendar import round_up
+class Round_off(unittest.TestCase):
+    def test_already_rounded_time(self):
+        one_hour_in_secs = 60 * 60
+        self.assertEqual(one_hour_in_secs, round_up(one_hour_in_secs))
+
+    def test_round_up(self):
+        _37_minutes_in_secs = 37 * 60
+        expected_result = 45 * 60 # should be rounded off to 45 minutes
+        self.assertEqual(expected_result, round_up(_37_minutes_in_secs))

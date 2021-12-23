@@ -45,3 +45,13 @@ def find_issue(wi_name):
         issue_number = number_match.group()
         proj = proj_match.group().strip(" -") # remove space and '-'2
         return proj + '-' + issue_number
+
+def round_up(time_in_secs):
+    _15_MINS_IN_SECS = 15 * 60
+    if((time_in_secs % _15_MINS_IN_SECS) == 0):
+        time = time_in_secs
+    else:
+        round_down = int(time_in_secs / _15_MINS_IN_SECS)
+        time = (round_down * _15_MINS_IN_SECS) + _15_MINS_IN_SECS
+
+    return time
