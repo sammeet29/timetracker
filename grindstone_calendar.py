@@ -3,7 +3,9 @@ from grindstone_timeslice import Time_slice
 
 class Calendar:
     def __init__(self):
+        # stores all the work items and the logging info
         self.all_work_items = {}
+        # used for iterating over all the worklogs
         self.work_item_keys = []
 
     '''

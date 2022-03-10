@@ -13,8 +13,8 @@ class Time_slice:
 
     def __decode_date(self, start_date_time):
         format = "%m/%d/%Y %I:%M:%S %p"
-        tc_start = datetime.strptime(start_date_time, format)
-        return tc_start.date()
+        self.start_date_time = datetime.strptime(start_date_time, format)
+        return start_date_time.date()
 
     # converts the duration into secs
     def __decode_duration(self, duration):
