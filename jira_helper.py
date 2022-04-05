@@ -1,4 +1,5 @@
 from jira_config import SEL_JIRA_URL
+from jira_config import SEL_JIRA_AUTH
 from datetime import datetime
 
 # SEL_JIRA_URL = 'dummy.com'
@@ -14,7 +15,23 @@ https://developer.atlassian.com/cloud/jira/platform/rest/v2/intro/
 
 class Jira_helper:
     def __init__(self):
-        self.__authenticate()
+        self.session = None
+        self.user = None
+        self.pswd = None
+
+    def create_session(self):
+        password = self.__get_password()
+        h = { "content-type:  application/json" }
+        d = json.dumps({"username": self.user, "password" : password})
+        response = requests.post(SEL_JIRA_AUTH, headers=h, data=d)
+
+        status = None
+        if(response is not None):
+            status = response.status_code
+            if(status == 200):
+                self.session = response.session
+
+        return status
 
     """
     The following link explains how to use it
@@ -46,9 +63,10 @@ class Jira_helper:
         # print(payload)
         return requests.post(url, auth=(self.user, self.pswd), data=payload, headers=headers)
 
-    def __authenticate(self):
+    def __get_password(self):
         self.user = getpass.getuser()
         self.pswd = getpass.getpass(prompt= ("Password for " + self.user + ": "))
+        return self.pswd
 
 def main():
     j = Jira_helper()
