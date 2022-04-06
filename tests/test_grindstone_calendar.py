@@ -118,25 +118,6 @@ class Calendar_test(unittest.TestCase):
         work_log = self.cal.get_work_logs(work_item)
         self.assertEqual(2, len(work_log))
 
-from grindstone_calendar import find_issue
-class Find_issue(unittest.TestCase):
-    def test_issue_then_project(self):
-        actual_issue = find_issue(WORK_ITEM)
-        expected_result = "ROS-1181"
-        self.assertMultiLineEqual(expected_result, actual_issue)
-
-    def test_proj_then_issue(self):
-        work_item = "ROS-1181 QSPI FT"
-        actual_issue = find_issue(work_item)
-        expected_result = "ROS-1181"
-        self.assertMultiLineEqual(expected_result, actual_issue)
-
-    def test_wi_without_issue_name(self):
-        work_item = "Admin"
-        actual_issue = find_issue(work_item)
-        expected_result = ""
-        self.assertMultiLineEqual(expected_result, actual_issue)
-
 from grindstone_calendar import round_up
 class Round_off(unittest.TestCase):
     def test_already_rounded_time(self):
