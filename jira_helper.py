@@ -34,9 +34,10 @@ class Jira_helper:
     '''
     def add_work_log(self, issue_id, time_in_secs, work_log_date):
         url = SEL_JIRA_URL + "issue/" + issue_id + "/worklog"
+        UTC_OFFSET_PACIFIC = "-0800"
         payload = json.dumps({
             "timeSpentSeconds" : time_in_secs,
-            "started" : work_log_date.isoformat()
+            "started" : work_log_date.isoformat(timespec = 'milliseconds') + UTC_OFFSET_PACIFIC
         })
         headers = {
             "Accept": "application/json",
@@ -60,7 +61,7 @@ def main():
     WORK_LOG_DATE = tc_start.date()
     issue = j.add_work_log(TEST_ISSUE, 900, tc_start)
     if(issue is not None):
-        print("Issue Response :", issue)
+        print("Issue Status :", issue.status_code)
         issue_json = issue.json()
         print(issue_json)
 
