@@ -21,16 +21,20 @@ class Jira_helper:
 
     def create_session(self):
         password = self.__get_password()
-        h = { "content-type:  application/json" }
+        h = { "content-type":  "application/json" }
         d = json.dumps({"username": self.user, "password" : password})
         response = requests.post(SEL_JIRA_AUTH, headers=h, data=d)
 
-        status = None
+        status = 404
         if(response is not None):
             status = response.status_code
             if(status == 200):
-                self.session = response.session
-
+                response_data = response.json()
+                # print(response_data)
+                self.session = response_data['session']
+                # print("Session: ", self.session)
+                cookie_header = { "cookie:"+ self.session["name"] + "=" + self.session["value"]}
+                # print(cookie_header)
         return status
 
     """
@@ -77,11 +81,19 @@ def main():
     format = "%m/%d/%Y %I:%M:%S %p"
     tc_start = datetime.strptime(START_TIME, format)
     WORK_LOG_DATE = tc_start.date()
-    issue = j.add_work_log(TEST_ISSUE, 900, tc_start)
-    if(issue is not None):
-        print("Issue Status :", issue.status_code)
-        issue_json = issue.json()
-        print(issue_json)
+
+    # Functionally test add_work_log
+    # issue = j.add_work_log(TEST_ISSUE, 900, tc_start)
+    # if(issue is not None):
+    #     print("Issue Status :", issue.status_code)
+    #     issue_json = issue.json()
+    #     print(issue_json)
+
+    session_status = j.create_session()
+    if(session_status == 200):
+        s = j.session
+        cookie_header = { "cookie:"+ s["name"] + "=" + s["value"]}
+        print(cookie_header)
 
 if __name__ == '__main__':
     main()
