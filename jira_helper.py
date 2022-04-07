@@ -21,21 +21,22 @@ class Jira_helper:
 
     def create_session(self):
         password = self.__get_password()
+        s = requests.session()
         h = { "content-type":  "application/json" }
         d = json.dumps({"username": self.user, "password" : password})
-        response = requests.post(SEL_JIRA_AUTH, headers=h, data=d)
+        response = s.post(SEL_JIRA_AUTH, headers = h, data = d)
 
-        status = 404
+        status_code = 404
         if(response is not None):
-            status = response.status_code
-            if(status == 200):
-                response_data = response.json()
-                # print(response_data)
-                self.session = response_data['session']
-                # print("Session: ", self.session)
-                cookie_header = { "cookie:"+ self.session["name"] + "=" + self.session["value"]}
-                # print(cookie_header)
-        return status
+            status_code = response.status_code
+            # print("status Code: ", status_code)
+            # print("response.json(): ", response.json)
+
+        # Save the session object only when the login was successful
+        if(status_code == 200):
+            self.session = s
+
+        return status_code
 
     """
     The following link explains how to use it
@@ -43,11 +44,13 @@ class Jira_helper:
 
     """
     def find_issue(self, issue_id):
+        if(self.session is None):
+            print("Session is not created")
+            return None
         payload = {'fields' : ['id', 'issueType', 'summary', 'status']}
-        issue = requests.get(SEL_JIRA_URL+ "issue/" + issue_id, auth=(self.user, self.pswd), params=payload)
-        # print(issue.url)
-        return issue
+        issue = self.session.get(SEL_JIRA_URL+ "issue/" + issue_id, params = payload)
 
+        return issue
 
     '''
     https://docs.atlassian.com/software/jira/docs/api/REST/1000.824.0/#api/2/issue-addWorklog
@@ -89,11 +92,14 @@ def main():
     #     issue_json = issue.json()
     #     print(issue_json)
 
-    session_status = j.create_session()
+    session_status = j.create_session_object()
     if(session_status == 200):
-        s = j.session
-        cookie_header = { "cookie:"+ s["name"] + "=" + s["value"]}
-        print(cookie_header)
+        issue = j.find_issue_object('ROS-1472')
+        if(issue is not None):
+            print("Status Code: ", issue.status_code)
+            print("Response.json(): ", issue.json())
+    else:
+        print("Failed to authenticate user")
 
 if __name__ == '__main__':
     main()

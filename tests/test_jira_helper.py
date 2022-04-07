@@ -22,6 +22,25 @@ class Fake_response():
     def json(self):
         return json.loads(self.text)
 
+class Fake_session():
+    def __init__(self, response = Fake_response()):
+        self.response = response
+        self.get_called = False
+        self.post_called = False
+        self.put_called = False
+
+    def get(self, url, headers = None, data = None):
+        self.get_called = True
+        return self.response
+
+    def post(self, url, headers = None, data = None):
+        self.post_called = True
+        return self.response
+
+    def put(self, url, headers = None, data = None):
+        self.put_called = True
+        return self.response
+
 class Jira_helper_test(unittest.TestCase):
     @mock.patch('getpass.getpass')
     @mock.patch('getpass.getuser')
@@ -30,17 +49,20 @@ class Jira_helper_test(unittest.TestCase):
         mock_getpass.return_value = 'passwd'
         j_helper = Jira_helper()
 
-        with patch('requests.post') as mock_request_post:
-            mock_request_post.return_value.status_code = 401
+        with patch('requests.session') as mock_request_session:
+            mock_session = Fake_session()
+            mock_request_session.return_value = mock_session
 
             status = j_helper.create_session()
 
-            self.assertEqual(401, status)
-            mock_request_post.assert_called_once()
+            self.assertEqual(404, status)
+            mock_request_session.assert_called_once()
+            self.assertTrue(mock_session.post_called)
 
         self.assertTrue(mock_getuser.called)
         self.assertTrue(mock_getpass.called)
         self.assertEqual(j_helper.user, 'sammkoli')
+        self.assertIsNone(j_helper.session)
 
     def test_create_session_expected_operation(self):
         jh = Jira_helper()
@@ -58,25 +80,31 @@ class Jira_helper_test(unittest.TestCase):
                 'previousLoginTime': '2022-04-05T22:11:25.847-0700'
             }
         })
-        with patch("requests.post") as mock_requests_post:
-            with patch("getpass.getuser") as mock_getuser:
-                with patch("getpass.getpass") as mock_getpass:
+        with patch("getpass.getuser") as mock_getuser:
+            with patch("getpass.getpass") as mock_getpass:
+                with patch("requests.session") as mock_session:
                     mock_getuser.return_value = 'sammkoli'
                     mock_getpass.return_value = 'password'
-                    mock_requests_post.return_value = valid_response
+                    s = Fake_session(valid_response)
+                    mock_session.return_value = s
+                    # mock_requests_post.return_value = valid_response
                     status = jh.create_session()
 
                     self.assertEqual(status, 200)
-                    self.assertEqual(jh.session["name"], "JSESSIONID")
-                    self.assertEqual(jh.session["value"], "699C0594C3BB19DBC6E8810888F81E21")
+                    self.assertIsNotNone(jh.session)
 
-    def test_find_issue(self):
+    # def test_find_issue_expected_operation(self):
+    #     j_helper = Jira_helper()
+    #     with patch('requests.get') as mock_request:
+    #         TEST_ISSUE = 'RP-8054'
+    #         mock_request.return_value.status_code = 200
+    #         r = j_helper.find_issue(TEST_ISSUE)
+    #         self.assertTrue(mock_request.called)
+
+    def test_find_issue_invalid_session(self):
         j_helper = Jira_helper()
-        with patch('requests.get') as mock_request:
-            TEST_ISSUE = 'RP-8054'
-            mock_request.return_value.status_code = 200
-            r = j_helper.find_issue(TEST_ISSUE)
-            self.assertTrue(mock_request.called)
+        r = j_helper.find_issue('RP-8054')
+        self.assertIsNone(r)
 
     def test_add_work_log(self):
         j_helper = Jira_helper()
