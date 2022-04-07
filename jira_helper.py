@@ -2,17 +2,15 @@ from jira_config import SEL_JIRA_URL
 from jira_config import SEL_JIRA_AUTH
 from datetime import datetime
 
-# SEL_JIRA_URL = 'dummy.com'
-# from jira import JIRA
 import getpass
 import json
 import requests
 
+SESSION_FAILURE = "Session needs to created!"
 '''
 JIRA rest v2 reference docs
 https://developer.atlassian.com/cloud/jira/platform/rest/v2/intro/
 '''
-
 class Jira_helper:
     def __init__(self):
         self.session = None
@@ -44,7 +42,7 @@ class Jira_helper:
     """
     def find_issue(self, issue_id):
         if(self.session is None):
-            print("Session is not created")
+            print(SESSION_FAILURE)
             return None
         payload = {'fields' : ['id', 'issueType', 'summary', 'status']}
         issue = self.session.get(SEL_JIRA_URL+ "issue/" + issue_id, params = payload)
@@ -57,7 +55,7 @@ class Jira_helper:
     '''
     def add_work_log(self, issue_id, time_in_secs, work_log_date):
         if(self.session is None):
-            print("Session not created")
+            print(SESSION_FAILURE)
             return None
 
         UTC_OFFSET_PACIFIC = "-0800"

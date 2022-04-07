@@ -47,13 +47,13 @@ class Jira_helper_test(unittest.TestCase):
     def test_create_session_failure(self, mock_getuser, mock_getpass):
         mock_getuser.return_value = 'sammkoli'
         mock_getpass.return_value = 'passwd'
-        j_helper = Jira_helper()
+        jh = Jira_helper()
 
         with patch('requests.session') as mock_request_session:
             mock_session = Fake_session()
             mock_request_session.return_value = mock_session
 
-            status = j_helper.create_session()
+            status = jh.create_session()
 
             self.assertEqual(404, status)
             mock_request_session.assert_called_once()
@@ -61,8 +61,8 @@ class Jira_helper_test(unittest.TestCase):
 
         self.assertTrue(mock_getuser.called)
         self.assertTrue(mock_getpass.called)
-        self.assertEqual(j_helper.user, 'sammkoli')
-        self.assertIsNone(j_helper.session)
+        self.assertEqual(jh.user, 'sammkoli')
+        self.assertIsNone(jh.session)
 
     def test_create_session_expected_operation(self):
         jh = Jira_helper()
@@ -94,22 +94,29 @@ class Jira_helper_test(unittest.TestCase):
                     self.assertIsNotNone(jh.session)
 
     # def test_find_issue_expected_operation(self):
-    #     j_helper = Jira_helper()
+    #     jh = Jira_helper()
     #     with patch('requests.get') as mock_request:
     #         TEST_ISSUE = 'RP-8054'
     #         mock_request.return_value.status_code = 200
-    #         r = j_helper.find_issue(TEST_ISSUE)
+    #         r = jh.find_issue(TEST_ISSUE)
     #         self.assertTrue(mock_request.called)
 
     def test_find_issue_invalid_session(self):
-        j_helper = Jira_helper()
-        r = j_helper.find_issue('RP-8054')
+        jh = Jira_helper()
+        r = jh.find_issue('RP-8054')
         self.assertIsNone(r)
 
-    def test_add_work_log(self):
-        j_helper = Jira_helper()
-        with patch('requests.post') as mock_request_post:
-            TEST_ISSUE = 'RP-8054'
-            TEST_DATE = datetime(2021,8, 16, 10, 39, 16)
-            r = j_helper.add_work_log(TEST_ISSUE, 900, TEST_DATE)
-            self.assertTrue(mock_request_post.called)
+    def test_add_work_log_invalid_session(self):
+        jh = Jira_helper()
+        TEST_ISSUE = 'RP-8054'
+        TEST_DATE = datetime(2021,8, 16, 10, 39, 16)
+        r = jh.add_work_log(TEST_ISSUE, 900, TEST_DATE)
+        self.assertIsNone(r)
+
+    # def test_add_work_log(self):
+    #     jh = Jira_helper()
+    #     with patch('requests.post') as mock_request_post:
+    #         TEST_ISSUE = 'RP-8054'
+    #         TEST_DATE = datetime(2021,8, 16, 10, 39, 16)
+    #         r = jh.add_work_log(TEST_ISSUE, 900, TEST_DATE)
+    #         self.assertTrue(mock_request_post.called)
