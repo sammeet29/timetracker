@@ -17,7 +17,6 @@ class Jira_helper:
     def __init__(self):
         self.session = None
         self.user = None
-        self.pswd = None
 
     def create_session(self):
         password = self.__get_password()
@@ -57,18 +56,22 @@ class Jira_helper:
     https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issue-worklogs/#api-rest-api-2-issue-issueidorkey-worklog-post
     '''
     def add_work_log(self, issue_id, time_in_secs, work_log_date):
-        url = SEL_JIRA_URL + "issue/" + issue_id + "/worklog"
+        if(self.session is None):
+            print("Session not created")
+            return None
+
         UTC_OFFSET_PACIFIC = "-0800"
         payload = json.dumps({
             "timeSpentSeconds" : time_in_secs,
             "started" : work_log_date.isoformat(timespec = 'milliseconds') + UTC_OFFSET_PACIFIC
         })
-        headers = {
+        h = {
             "Accept": "application/json",
             "Content-Type": "application/json"
         }
         # print(payload)
-        return requests.post(url, auth=(self.user, self.pswd), data=payload, headers=headers)
+        url = SEL_JIRA_URL + "issue/" + issue_id + "/worklog"
+        return self.session.post(url, data=payload, headers=h)
 
     def __get_password(self):
         self.user = getpass.getuser()
@@ -92,9 +95,10 @@ def main():
     #     issue_json = issue.json()
     #     print(issue_json)
 
-    session_status = j.create_session_object()
+    session_status = j.create_session()
     if(session_status == 200):
-        issue = j.find_issue_object('ROS-1472')
+        # issue = j.add_work_log('ROS-1472')
+        issue = j.add_work_log(TEST_ISSUE, 900, tc_start)
         if(issue is not None):
             print("Status Code: ", issue.status_code)
             print("Response.json(): ", issue.json())
