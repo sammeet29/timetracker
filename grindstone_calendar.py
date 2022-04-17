@@ -1,6 +1,15 @@
 import datetime
 from grindstone_timeslice import Time_slice
 
+def get_time_string(seconds):
+    seconds = seconds % (24 * 3600)
+    hour = seconds // 3600
+    seconds %= 3600
+    minutes = seconds // 60
+    seconds %= 60
+
+    return "%d:%02d:%02d" % (hour, minutes, seconds)
+
 class Calendar:
     def __init__(self):
         # stores all the work items and the logging info
@@ -62,8 +71,9 @@ class Calendar:
             print("Work Item :" + each_item)
             print("Jira issue: ", self.__find_issue(each_item))
             for each_day in days.keys():
+                time_in_secs = days[each_day]
                 print("  Date " + str(each_day) + \
-                    " Time: " + str(days[each_day]) + " secs")
+                    " Time: " + get_time_string(time_in_secs))
 
     '''
     Given a Work Item string, tries to figure out the JIRA issue number.
