@@ -53,17 +53,19 @@ def main():
         cal = grindstone_file.get_calendar()
         cal.print_calender()
 
-    # work_item = cal.get_next_issue()
-    # while work_item is not None:
-    #     issue = get_issue(work_item)
-    #     work_log = cal.get_work_logs(work_item)
-    #     print(issue)
-    #     for key in work_log.keys():
-    #         from grindstone_calendar import round_up
-    #         print("  ", key, (round_up(work_log[key])/(60 * 60)), 'hrs')
-    #         # log time here
-    #         # log result in a text file!
+    # if(interactive):
+    #     cal = grindstone_file.get_calendar()
     #     work_item = cal.get_next_issue()
+    #     while work_item is not None:
+    #         issue = get_issue(work_item)
+    #         work_log = cal.get_work_logs(work_item)
+    #         print(issue)
+    #         for key in work_log.keys():
+    #             from grindstone_calendar import round_up
+    #             print("  ", key, (round_up(work_log[key])/(60 * 60)), 'hrs')
+    #             # log time here
+    #             # log result in a text file!
+    #         work_item = cal.get_next_issue()
 
     #print log text file
 

@@ -53,13 +53,37 @@ class Calendar:
     def reset_iterator(self):
         self.work_item_keys = []
 
+    '''
+    Prints out the Calendar entries, one issue at a time.
+    '''
     def print_calender(self):
         for each_item in self.all_work_items.keys():
             days = self.all_work_items[each_item]
             print("Work Item :" + each_item)
+            print("Jira issue: ", self.__find_issue(each_item))
             for each_day in days.keys():
                 print("  Date " + str(each_day) + \
                     " Time: " + str(days[each_day]) + " secs")
+
+    '''
+    Given a Work Item string, tries to figure out the JIRA issue number.
+
+    Returns: None if the issue was not found
+    '''
+    def __find_issue(self, wi_name):
+        import re
+        number_pattern = re.compile('\d+')
+        number_match = number_pattern.search(wi_name)
+
+        project_pattern = re.compile('(-[a-z|A-Z]+)|([a-z|A-Z]+-)')
+        proj_match = project_pattern.search(wi_name)
+
+        issue = None
+        if((number_match is not None) and (proj_match is not None)):
+            issue_number = number_match.group()
+            proj = proj_match.group().strip(" -") # remove space and '-'
+            issue = proj + '-' + issue_number
+        return issue
 
     '''
     Clear Calendar entries
@@ -68,22 +92,6 @@ class Calendar:
         self.all_work_items = {}
         self.reset_iterator()
 
-# Given a Work Item string, tries to figure out the JIRA issue number.
-# Returns None if the issue was not found
-def find_issue(wi_name):
-    import re
-    number_pattern = re.compile('\d+')
-    number_match = number_pattern.search(wi_name)
-
-    project_pattern = re.compile('(-[a-z|A-Z]+)|([a-z|A-Z]+-)')
-    proj_match = project_pattern.search(wi_name)
-
-    issue = None
-    if((number_match is not None) and (proj_match is not None)):
-        issue_number = number_match.group()
-        proj = proj_match.group().strip(" -") # remove space and '-'
-        issue = proj + '-' + issue_number
-    return issue
 
 def round_up(time_in_secs):
     _15_MINS_IN_SECS = 15 * 60
