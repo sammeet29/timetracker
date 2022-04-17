@@ -28,27 +28,3 @@ class Read_grindstone_csv:
         first_line.find("Work Item") == -1):
             return False
         return True
-
-def verify_issue(work_item, issue):
-    rtn = False
-    print('Is JIRA issue:', issue,'correct for', work_item, '?')
-    response = input()
-    if((response == 'y') or (response == 'Y')):
-        rtn = True
-    return rtn
-
-def get_issue_from_user(work_item):
-    issue = None
-    print('Enter Jira issue for the Work Item:', work_item)
-    issue = input()
-    return issue
-
-def get_issue(work_item):
-    from grindstone_calendar import find_issue
-    while(True):
-        issue = find_issue(work_item)
-        if(issue is None):
-            issue = get_issue_from_user(work_item)
-        if(verify_issue(work_item, issue)):
-            break
-    return issue

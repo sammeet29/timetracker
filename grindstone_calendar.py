@@ -68,6 +68,8 @@ class Calendar:
         self.all_work_items = {}
         self.reset_iterator()
 
+# Given a Work Item string, tries to figure out the JIRA issue number.
+# Returns None if the issue was not found
 def find_issue(wi_name):
     import re
     number_pattern = re.compile('\d+')
