@@ -1,7 +1,7 @@
 import csv
 from os.path import exists
-from grindstone_timeslice import Time_slice
-from grindstone_calendar import Calendar
+from grindstone_timeslice import TimeSlice
+from grindstone_calendar import Calendar, find_issue
 
 class ReadGrindstoneCSV:
     """ Reads a Grindstone generated CSV file"""
@@ -20,11 +20,12 @@ class ReadGrindstoneCSV:
 
         Return: Calendar if csv files had all the required fields, else None.
         """
+        # TODO: Throw error if the calendar cannot be created
         cal = Calendar()
         with open(self.file_name, encoding='utf-8-sig') as csv_file:
             csvreader = csv.DictReader(csv_file)
             for row in csvreader:
-                current_time_slice = Time_slice(row['Work Item'], row['Start'], row['Duration'])
+                current_time_slice = TimeSlice(row['Work Item'], row['Start'], row['Duration'])
                 cal.add_timeslice(current_time_slice)
         return cal
 
@@ -36,6 +37,15 @@ class ReadGrindstoneCSV:
         return True
 
 def verify_issue(work_item, issue):
+    """
+    Verifies if the issue number matches the work item from the user
+
+    work_item -- Work Item to check for
+    issue -- Issue to match with the work item
+
+    Returns: True if the user accepts that the Issue number matches the Work
+        Item
+    """
     rtn = False
     print('Is JIRA issue:', issue,'correct for', work_item, '?')
     response = input()
@@ -44,14 +54,26 @@ def verify_issue(work_item, issue):
     return rtn
 
 def get_issue_from_user(work_item):
+    """
+    Gets the Issue key for a particular work item from the User in a string
+
+    work_item - Work Item for which to get the Issue key
+
+    Returns: String containing the Issue key
+    """
     issue = None
     print('Enter Jira issue for the Work Item:', work_item)
     issue = input()
     return issue
 
 def get_issue(work_item):
-    from grindstone_calendar import find_issue
+    """
+    Tries to figure out the Issue key from the work item name
+
+    Returns: A string containing the Issue key or None
+    """
     while(True):
+        # TODO: throw error instead!!
         issue = find_issue(work_item)
         if(issue is None):
             issue = get_issue_from_user(work_item)
