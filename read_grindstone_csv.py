@@ -1,9 +1,10 @@
 import csv
+from os.path import exists
 from grindstone_timeslice import Time_slice
 from grindstone_calendar import Calendar
-from os.path import exists
 
-class Read_grindstone_csv:
+class ReadGrindstoneCSV:
+    """ Reads a Grindstone generated CSV file"""
     def __init__(self, file_name):
         if(exists(file_name)):
             with open(file_name, encoding='utf-8-sig') as csv_file:
@@ -14,6 +15,11 @@ class Read_grindstone_csv:
             self.is_valid = False
 
     def get_calendar(self):
+        """
+        Creates a calendar from the read csv document.
+
+        Return: Calendar if csv files had all the required fields, else None.
+        """
         cal = Calendar()
         with open(self.file_name, encoding='utf-8-sig') as csv_file:
             csvreader = csv.DictReader(csv_file)
